@@ -1,6 +1,8 @@
 /** @format */
 "use client";
+
 import ProductCard from "@/components/ProductCard";
+
 const products = [
     { id: "1", name: "T-shirt", price: 19.99, image: "/images/shirt.jpg" },
     { id: "2", name: "Shoes", price: 59.99, image: "/images/shoes.jpg" },
@@ -13,7 +15,7 @@ const products = [
     // Add more as needed
 ];
 
-export default function Home() {
+export default function ProductsPage() {
     return (
         <div className="py-8 min-h-screen ">
             <div className="container mx-auto max-w-7xl">
