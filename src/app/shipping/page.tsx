@@ -1,11 +1,14 @@
 /** @format */
+
 import React from "react";
 
-const ProfilePage = () => {
+const ShippingPage = () => {
     return (
         <div className="min-h-screen text-center pt-30 text-4xl">
-            User ProfilePage
+            {" "}
+            ShippingPage
         </div>
     );
 };
-export default ProfilePage;
+
+export default ShippingPage;

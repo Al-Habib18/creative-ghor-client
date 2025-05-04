@@ -12,7 +12,7 @@ const customBaseQuery = async (
     extraOptions: any
 ) => {
     const baseQuery = fetchBaseQuery({
-        baseUrl: process.env.NEXT_PUBLIC_API_URL,
+        baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
         prepareHeaders: async (headers) => {
             const token = await window.Clerk?.session?.getToken();
             if (token) {
@@ -64,5 +64,3 @@ export const api = createApi({
     tagTypes: ["Users", "Products", "Reviews", "Orders"],
     endpoints: () => ({}),
 });
-
-export const {} = api;
