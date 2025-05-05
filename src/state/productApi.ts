@@ -13,8 +13,8 @@ const productApi = api.injectEndpoints({
             providesTags: ["Products"],
         }),
 
-        getSingleProduct: builder.query<Product, { id: string }>({
-            query: ({ id }) => `/products/${id}`,
+        getSingleProduct: builder.query<Product, string>({
+            query: (id) => `/products/${id}`,
             providesTags: ["Products"],
         }),
 

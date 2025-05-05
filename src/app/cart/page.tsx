@@ -19,55 +19,57 @@ const CartPage = () => {
 
     return (
         <div className="container mx-auto px-4 py-10 min-h-screen">
-            <h1 className="text-3xl font-bold mb-8 text-center">
+            <h1 className="text-4xl font-bold text-center mb-10 dark:text-white">
                 Your Shopping Cart
             </h1>
 
             {cartItems.length === 0 ? (
-                <div className="text-center text-gray-600">
+                <div className="text-center text-gray-600 dark:text-gray-300">
                     <p className="text-lg mb-4">
                         Your cart is currently empty.
                     </p>
                     <Link
                         href="/products"
-                        className="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
                     >
                         Continue Shopping
                     </Link>
                 </div>
             ) : (
-                <>
-                    <div className="grid gap-6 mb-8  bg-white text-black dark:text-white  dark:bg-zinc-900">
+                <div className="space-y-10">
+                    {/* Cart Items */}
+                    <div className="space-y-6">
                         {cartItems.map((item) => (
                             <div
                                 key={item.id}
-                                className="flex items-center justify-between bg-white shadow-md p-4 rounded-lg"
+                                className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-zinc-800 shadow-md rounded-xl p-4 gap-4"
                             >
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-5">
                                     <Image
-                                        src={item.image}
+                                        src={
+                                            /* item.image ||  */ "/placeholder.jpeg"
+                                        }
                                         alt={`Image of ${item.name}`}
                                         width={80}
                                         height={80}
-                                        className="rounded-md object-cover"
+                                        className="rounded-lg object-cover border border-gray-200 dark:border-zinc-700"
                                     />
                                     <div>
-                                        <h2 className="text-lg font-semibold">
+                                        <h2 className="text-lg font-semibold dark:text-white">
                                             {item.name}
                                         </h2>
-                                        <p className="text-sm text-gray-500">
-                                            Price: ${item.price.toFixed(2)}
-                                        </p>
-                                        <p className="text-sm text-gray-500">
-                                            Quantity: {item.quantity}
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            ${item.price.toFixed(2)} ×{" "}
+                                            {item.quantity}
                                         </p>
                                     </div>
                                 </div>
+
                                 <button
                                     onClick={() =>
                                         dispatch(removeFromCart(item.id))
                                     }
-                                    className="text-red-600 bg-gray-400 px-4 py-2 rounded hover:text-red-800 text-sm font-medium transition"
+                                    className="text-sm px-4 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition"
                                 >
                                     Remove
                                 </button>
@@ -75,21 +77,22 @@ const CartPage = () => {
                         ))}
                     </div>
 
-                    <div className="flex flex-col md:flex-row justify-between items-center bg-gray-100 p-6 rounded-lg shadow-inner">
-                        <div className="text-2xl font-bold text-gray-800 mb-4 md:mb-0">
+                    {/* Total + Actions */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-100 dark:bg-zinc-700 p-6 rounded-xl shadow-inner">
+                        <div className="text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-0">
                             Total: ${totalPrice.toFixed(2)}
                         </div>
-                        <div className="space-x-4">
+                        <div className="flex gap-4">
                             <button
                                 onClick={() => dispatch(clearCart())}
-                                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                                className="px-5 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition text-sm"
                             >
                                 Clear Cart
                             </button>
                             <CheckoutButton />
                         </div>
                     </div>
-                </>
+                </div>
             )}
         </div>
     );

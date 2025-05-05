@@ -2,52 +2,30 @@
 "use client";
 
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useAppDispatch } from "@/state/redux";
 import { addToCart } from "@/state/cartSlice";
 import { useTheme } from "next-themes";
+import { useGetSingleProductQuery } from "@/state/productApi";
 import CheckoutButton from "@/components/CheckoutButton";
-
-// Mock product data (replace with actual API data or Redux state)
-const mockProducts = [
-    {
-        id: "1",
-        name: "T-shirt",
-        price: 19.99,
-        image: "/images/shirt.jpg",
-        description: "Comfortable cotton t-shirt for everyday wear.",
-    },
-    {
-        id: "2",
-        name: "Shoes",
-        price: 59.99,
-        image: "/images/shoes.jpg",
-        description: "Durable running shoes with great grip.",
-    },
-    {
-        id: "3",
-        name: "Headphones",
-        price: 99.99,
-        image: "/images/headphones.jpg",
-        description:
-            "High-quality wireless headphones with noise cancellation.",
-    },
-];
+import Loading from "@/components/Loading";
+import ErrorMessage from "@/components/ErrorMessage";
+import renderStars from "@/components/renderStars";
 
 export default function ProductDetailsPage() {
-    const { id } = useParams(); // Get the product id from the URL
-    const router = useRouter();
-    const { resolvedTheme } = useTheme();
+    const { id } = useParams();
     const dispatch = useAppDispatch();
-
-    const product = mockProducts.find((p) => p.id === id);
-
-    if (!product)
-        return <p className="text-center mt-10 text-lg">Product not found</p>;
-
+    const { resolvedTheme } = useTheme();
     const isDark = resolvedTheme === "dark";
 
+    const {
+        data: product,
+        isLoading,
+        error,
+    } = useGetSingleProductQuery(id as string);
+
     const handleAddToCart = () => {
+        if (!product) return;
         dispatch(
             addToCart({
                 id: product.id,
@@ -55,44 +33,75 @@ export default function ProductDetailsPage() {
                 price: product.price,
                 image: product.image,
                 quantity: 1,
+                stock: product.stock,
             })
         );
     };
 
+    if (isLoading) return <Loading />;
+    if (error || !product) return <ErrorMessage />;
+
+    const originalPrice = (
+        product.price +
+        (product.price * product.discount) / 100
+    ).toFixed(2);
+
     return (
-        <div
+        <section
             className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${
                 isDark ? "bg-zinc-900 text-white" : "bg-white text-black"
             }`}
         >
-            <div className="max-w-4xl mx-auto bg-white dark:bg-zinc-800 rounded-2xl shadow-md p-6 md:flex md:space-x-8">
-                {/* Product Image */}
-                <div className="flex-shrink-0">
+            <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 rounded-2xl shadow-lg p-6 bg-white dark:bg-zinc-800">
+                {/*TODO: implement Product Image */}
+                <div className="w-full md:w-1/2">
                     <Image
-                        src={product.image}
+                        src={/* product.image ||  */ "/placeholder.jpeg"}
                         alt={product.name}
-                        width={400}
-                        height={300}
-                        className="rounded-xl object-cover w-full max-w-md"
+                        width={500}
+                        height={400}
+                        priority
+                        className="rounded-xl object-cover w-full h-auto border border-gray-200 dark:border-zinc-700"
                     />
                 </div>
 
-                {/* Product Information */}
-                <div className="mt-6 md:mt-0 md:flex-1">
-                    <h1 className="text-3xl font-bold">{product.name}</h1>
-                    <p className="text-xl text-gray-500 dark:text-gray-400 mt-2">
-                        ${product.price.toFixed(2)}
-                    </p>
-                    <p className="mt-4 text-base leading-relaxed text-gray-600 dark:text-gray-300">
-                        {product.description}
-                    </p>
+                {/* Product Info */}
+                <div className="w-full md:w-1/2 flex flex-col justify-between">
+                    <div>
+                        <h1 className="text-4xl font-bold mb-3">
+                            {product.name}
+                        </h1>
 
-                    {/* Buttons */}
-                    <div className="mt-6 flex gap-4">
-                        {/* Add to Cart Button */}
+                        <div className="flex items-center gap-3 mb-2">
+                            <span className="text-2xl font-semibold text-green-500">
+                                ${product.price.toFixed(2)}
+                            </span>
+                            {product.discount > 0 && (
+                                <span className="text-md text-red-500 line-through">
+                                    ${originalPrice}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="text-sm text-yellow-500 mb-4">
+                            <div className="flex items-center gap-1">
+                                {renderStars(product.rating)}
+                                <span className="text-xs text-muted-foreground">
+                                    ({product.reviewsCount})
+                                </span>
+                            </div>
+                        </div>
+
+                        <p className="text-base leading-relaxed text-gray-600 dark:text-gray-300">
+                            {product.description}
+                        </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="mt-6 flex gap-4 flex-wrap">
                         <button
                             onClick={handleAddToCart}
-                            className={`px-6 py-3 rounded-xl text-sm font-medium transition-colors ${
+                            className={`px-6 py-3 rounded-xl text-sm font-medium transition-colors shadow ${
                                 isDark
                                     ? "bg-white text-black hover:bg-gray-200"
                                     : "bg-black text-white hover:bg-gray-800"
@@ -101,14 +110,27 @@ export default function ProductDetailsPage() {
                             Add to Cart
                         </button>
 
-                        {/* Shop Now Button */}
                         <CheckoutButton
                             name="Shop Now"
                             redirectUrl="/checkout"
                         />
                     </div>
+
+                    {/* Meta Info */}
+                    <div className="mt-6 text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                        <p>
+                            <span className="font-medium">Category:</span>{" "}
+                            {product.category}
+                        </p>
+                        <p>
+                            <span className="font-medium">Stock:</span>{" "}
+                            {product.stock > 0
+                                ? `${product.stock} available`
+                                : "Out of stock"}
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }

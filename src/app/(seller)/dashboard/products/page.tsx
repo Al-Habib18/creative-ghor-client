@@ -22,7 +22,7 @@ import {
     SelectItem,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner"; // or your preferred toast lib
+import { toast } from "sonner";
 
 const ProductsPage = () => {
     const [isUploading, setIsUploading] = useState(false);
@@ -30,6 +30,7 @@ const ProductsPage = () => {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+    //TODO: Replace with real seller id
     const sellerId = "user_2voHpnu85ucRij9yhq9ahq4NA5D";
 
     // Fetch products using the query hook
