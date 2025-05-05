@@ -22,3 +22,21 @@ export type CartItem = {
     quantity: number;
     stock: number;
 };
+
+export type Order = {
+    id: string | null;
+    shippingAddressId: string | null;
+    productIds: string[];
+    quantity: number;
+    totalAmount: number;
+};
+
+export type ShippingAddress = {
+    id: string | null;
+    userId: string;
+    division: string;
+    district: string;
+    upzila: string;
+    postalCode: string;
+    phoneNumber: string;
+};

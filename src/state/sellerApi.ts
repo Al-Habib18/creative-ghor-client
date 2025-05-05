@@ -11,6 +11,7 @@ const sellerApi = api.injectEndpoints({
         >({
             query: ({ category, id }) => ({
                 url: `/users/${id}/products`,
+                // url: "/products?userId=" + id,
                 params: category ? { category } : undefined,
             }),
             providesTags: ["Products"],

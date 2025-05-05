@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Clerk } from "@clerk/clerk-js";
+import { useUser } from "@clerk/nextjs";
 import {
     Select,
     SelectTrigger,
@@ -23,15 +24,17 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 const ProductsPage = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [productList, setProductList] = useState<Product[]>([]);
 
-    //TODO: Replace with real seller id
-    const sellerId = "user_2voHpnu85ucRij9yhq9ahq4NA5D";
+    const { user } = useUser();
+    const sellerId = user?.id || "";
 
     // Fetch products using the query hook
     const {
@@ -41,6 +44,12 @@ const ProductsPage = () => {
     } = useGetAllProductsOfSellerQuery({
         id: sellerId,
     });
+
+    useEffect(() => {
+        if (products) {
+            setProductList(products);
+        }
+    }, [products]);
 
     const {
         control,
@@ -89,7 +98,8 @@ const ProductsPage = () => {
             }
 
             // Adding the new product to the list
-            products?.unshift(responseData.data); // Unshift to add the product at the beginning
+            // products?.unshift(responseData.data); // Unshift to add the product at the beginning
+            setProductList((prev) => [responseData.data, ...prev]);
             reset();
             setImageFile(null);
             setImagePreview(null);
@@ -264,7 +274,7 @@ const ProductsPage = () => {
 
             {/* Display Products */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {products?.map((product: Product) => (
+                {productList?.map((product: Product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>

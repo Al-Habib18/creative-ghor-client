@@ -61,6 +61,6 @@ const customBaseQuery = async (
 export const api = createApi({
     baseQuery: customBaseQuery,
     reducerPath: "api",
-    tagTypes: ["Users", "Products", "Reviews", "Orders"],
+    tagTypes: ["Users", "Products", "Reviews", "Orders", "ShippingAddress"],
     endpoints: () => ({}),
 });

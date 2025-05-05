@@ -3,7 +3,6 @@
 
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useAppDispatch } from "@/state/redux";
 import { addToCart } from "@/state/cartSlice";
 import { useTheme } from "next-themes";
 import { useGetSingleProductQuery } from "@/state/productApi";
@@ -11,8 +10,11 @@ import CheckoutButton from "@/components/CheckoutButton";
 import Loading from "@/components/Loading";
 import ErrorMessage from "@/components/ErrorMessage";
 import renderStars from "@/components/renderStars";
+import { useAppDispatch, useAppSelector } from "@/state/redux";
+import { createDraftOrder } from "@/state/orderSlice";
 
 export default function ProductDetailsPage() {
+    const cartItems = useAppSelector((state) => state.cart.items);
     const { id } = useParams();
     const dispatch = useAppDispatch();
     const { resolvedTheme } = useTheme();
@@ -112,7 +114,29 @@ export default function ProductDetailsPage() {
 
                         <CheckoutButton
                             name="Shop Now"
-                            redirectUrl="/checkout"
+                            redirectUrl="/checkout/shipping"
+                            onBeforeRedirect={() => {
+                                const productIds = cartItems.map(
+                                    (item) => item.id
+                                );
+                                const quantity = cartItems.reduce(
+                                    (sum, item) => sum + item.quantity,
+                                    0
+                                );
+                                const totalAmount = cartItems.reduce(
+                                    (sum, item) =>
+                                        sum + item.price * item.quantity,
+                                    0
+                                );
+
+                                dispatch(
+                                    createDraftOrder({
+                                        productIds,
+                                        quantity,
+                                        totalAmount,
+                                    })
+                                );
+                            }}
                         />
                     </div>
 

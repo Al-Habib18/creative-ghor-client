@@ -4,6 +4,7 @@
 
 import { useAppSelector, useAppDispatch } from "@/state/redux";
 import { removeFromCart, clearCart } from "@/state/cartSlice";
+import { createDraftOrder } from "@/state/orderSlice";
 import Image from "next/image";
 import Link from "next/link";
 import CheckoutButton from "@/components/CheckoutButton";
@@ -89,7 +90,33 @@ const CartPage = () => {
                             >
                                 Clear Cart
                             </button>
-                            <CheckoutButton />
+
+                            {/* creating a draft order before redirecting */}
+                            <CheckoutButton
+                                redirectUrl="/checkout/shipping"
+                                onBeforeRedirect={() => {
+                                    const productIds = cartItems.map(
+                                        (item) => item.id
+                                    );
+                                    const quantity = cartItems.reduce(
+                                        (sum, item) => sum + item.quantity,
+                                        0
+                                    );
+                                    const totalAmount = cartItems.reduce(
+                                        (sum, item) =>
+                                            sum + item.price * item.quantity,
+                                        0
+                                    );
+
+                                    dispatch(
+                                        createDraftOrder({
+                                            productIds,
+                                            quantity,
+                                            totalAmount,
+                                        })
+                                    );
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
