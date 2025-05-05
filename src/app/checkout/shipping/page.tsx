@@ -1,21 +1,41 @@
 /** @format */
-
 "use client";
 
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { ShippingAddress } from "@/types";
 import { useCreateShippingAddressMutation } from "@/state/shippingApi";
+import { useCreatePaymentMutation } from "@/state/paymentApi";
+import { useCreateOrderMutation } from "@/state/orderApi";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useAppSelector, useAppDispatch } from "@/state/redux";
+import { clearCart } from "@/state/cartSlice";
 
 export default function ShippingPage() {
     const router = useRouter();
-    const [createShippingAddress, { isLoading, error }] =
+    const dispatch = useAppDispatch();
+    const [createShippingAddress, { isLoading: isSavingShipping }] =
         useCreateShippingAddressMutation();
+    const [createOrder, { isLoading: isCreatingOrder }] =
+        useCreateOrderMutation();
+    const [createPayment, { isLoading: isCreatingPayment }] =
+        useCreatePaymentMutation();
+
     const [shippingAddressId, setShippingAddressId] = useState<string | null>(
         null
+    );
+    const [paymentMethod, setPaymentMethod] = useState<
+        "cod" | "sslcommerz" | null
+    >(null);
+
+    const cartItems = useAppSelector((state) => state.cart.items);
+    const productIds = cartItems.map((item) => item.id);
+    const quantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const totalAmount = cartItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
     );
 
     const {
@@ -26,14 +46,71 @@ export default function ShippingPage() {
 
     const onSave = async (data: ShippingAddress) => {
         try {
-            const ShippingAddress = await createShippingAddress(data).unwrap();
-            setShippingAddressId(ShippingAddress.id);
-
+            const saved = await createShippingAddress(data).unwrap();
+            setShippingAddressId(saved.id);
             toast.success("Shipping address saved.");
-            router.push("/checkout/payment");
         } catch (err) {
             console.error("Shipping address submission failed:", err);
             toast.error("Failed to save shipping address. Please try again.");
+        }
+    };
+
+    const handleContinue = async () => {
+        if (!shippingAddressId || !paymentMethod) {
+            toast.error(
+                "Please complete the shipping info and select a payment method."
+            );
+            return;
+        }
+
+        try {
+            const orderData = {
+                shippingAddressId,
+                productIds,
+                quantity,
+                totalAmount,
+            };
+
+            if (productIds.length === 0) {
+                toast.error("Please add products to cart.");
+                return;
+            }
+            // create order
+            const order = await createOrder(orderData).unwrap();
+
+            dispatch(clearCart()); // Clear the cart
+
+            toast.success("Order placed successfully.");
+
+            if (paymentMethod === "cod") {
+                router.push(`/checkout/confirmation?orderId=${order.id}`);
+            } else if (paymentMethod === "sslcommerz") {
+                try {
+                    const orderId = order?.id || "";
+                    const token = await window.Clerk?.session?.getToken();
+
+                    if (!token) {
+                        toast.error("Unauthorized! Please log in.");
+                        return;
+                    }
+
+                    const response = await createPayment({
+                        orderId,
+                    }).unwrap();
+
+                    if (response?.GatewayPageURL) {
+                        window.location.href = response.GatewayPageURL;
+                    } else {
+                        throw new Error("Gateway URL not returned");
+                    }
+                } catch (err) {
+                    console.error("Payment initiation failed:", err);
+                    toast.error("Payment initiation failed. Please try again.");
+                }
+            }
+        } catch (err) {
+            console.error("Order creation failed:", err);
+            toast.error("Failed to place order. Try again.");
         }
     };
 
@@ -78,25 +155,60 @@ export default function ShippingPage() {
                         </div>
                     ))}
 
-                    {error && (
-                        <p className="text-red-500 text-sm">
-                            Something went wrong. Please try again.
-                        </p>
-                    )}
-
                     <Button
                         type="submit"
-                        disabled={isLoading}
-                        className={`w-full  ${
-                            isLoading ? "opacity-50 cursor-not-allowed" : ""
+                        disabled={isSavingShipping}
+                        className={`w-full ${
+                            isSavingShipping
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
                         }`}
                     >
-                        {isLoading ? "Saving..." : "Save Shipping Address"}
+                        {isSavingShipping
+                            ? "Saving..."
+                            : "Save Shipping Address"}
                     </Button>
-                    {/* ccreate a checklist for payment */}
-                    {/* TODO: create a button  */}
-                    <Button>Continue</Button>
                 </form>
+
+                <div className="mt-8">
+                    <h2 className="text-lg font-semibold mb-2">
+                        Select Payment Method
+                    </h2>
+                    <label className="block mb-2">
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="cod"
+                            onChange={() => setPaymentMethod("cod")}
+                            checked={paymentMethod === "cod"}
+                            className="mr-2"
+                        />
+                        Cash on Delivery
+                    </label>
+                    <label className="block mb-4">
+                        <input
+                            type="radio"
+                            name="paymentMethod"
+                            value="sslcommerz"
+                            onChange={() => setPaymentMethod("sslcommerz")}
+                            checked={paymentMethod === "sslcommerz"}
+                            className="mr-2"
+                        />
+                        Pay with SSLCommerz
+                    </label>
+
+                    <Button
+                        onClick={handleContinue}
+                        disabled={
+                            !shippingAddressId ||
+                            !paymentMethod ||
+                            isCreatingOrder
+                        }
+                        className="w-full mt-4"
+                    >
+                        {isCreatingOrder ? "Processing..." : "Continue"}
+                    </Button>
+                </div>
             </div>
         </div>
     );

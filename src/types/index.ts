@@ -24,7 +24,7 @@ export type CartItem = {
 };
 
 export type Order = {
-    id: string | null;
+    id?: string | null;
     shippingAddressId: string | null;
     productIds: string[];
     quantity: number;

@@ -18,8 +18,7 @@ export default function PaymentPage() {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    // You can include total amount, user info, etc.
-                    amount: 1000, // Example amount
+                    amount: 1000,
                     currency: "BDT",
                 }),
             });

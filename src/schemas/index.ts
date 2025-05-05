@@ -51,8 +51,8 @@ export const OrderSchema = z.object({
     productId: z.array(z.string()),
     quantity: z.number().int().positive(),
     totalAmount: z.number().positive(),
-    orderStatus: OrderStatusEnum,
-    paymentStatus: PaymentStatusEnum,
+    orderStatus: OrderStatusEnum.optional(),
+    paymentStatus: PaymentStatusEnum.optional(),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });

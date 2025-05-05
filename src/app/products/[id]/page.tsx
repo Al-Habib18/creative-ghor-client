@@ -10,11 +10,9 @@ import CheckoutButton from "@/components/CheckoutButton";
 import Loading from "@/components/Loading";
 import ErrorMessage from "@/components/ErrorMessage";
 import renderStars from "@/components/renderStars";
-import { useAppDispatch, useAppSelector } from "@/state/redux";
-import { createDraftOrder } from "@/state/orderSlice";
+import { useAppDispatch } from "@/state/redux";
 
 export default function ProductDetailsPage() {
-    const cartItems = useAppSelector((state) => state.cart.items);
     const { id } = useParams();
     const dispatch = useAppDispatch();
     const { resolvedTheme } = useTheme();
@@ -55,7 +53,6 @@ export default function ProductDetailsPage() {
             }`}
         >
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 rounded-2xl shadow-lg p-6 bg-white dark:bg-zinc-800">
-                {/*TODO: implement Product Image */}
                 <div className="w-full md:w-1/2">
                     <Image
                         src={/* product.image ||  */ "/placeholder.jpeg"}
@@ -114,29 +111,8 @@ export default function ProductDetailsPage() {
 
                         <CheckoutButton
                             name="Shop Now"
-                            redirectUrl="/checkout/shipping"
-                            onBeforeRedirect={() => {
-                                const productIds = cartItems.map(
-                                    (item) => item.id
-                                );
-                                const quantity = cartItems.reduce(
-                                    (sum, item) => sum + item.quantity,
-                                    0
-                                );
-                                const totalAmount = cartItems.reduce(
-                                    (sum, item) =>
-                                        sum + item.price * item.quantity,
-                                    0
-                                );
-
-                                dispatch(
-                                    createDraftOrder({
-                                        productIds,
-                                        quantity,
-                                        totalAmount,
-                                    })
-                                );
-                            }}
+                            redirectUrl="/cart"
+                            onBeforeRedirect={handleAddToCart}
                         />
                     </div>
 
