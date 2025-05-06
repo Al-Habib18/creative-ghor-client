@@ -25,7 +25,7 @@ export default function ContactPage() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate form submission (replace with your API logic)
+        // Simulate form submission
         setTimeout(() => {
             setIsSubmitting(false);
             setSuccess(true);
@@ -34,39 +34,42 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-zinc-900 py-12">
-            <div className="container mx-auto max-w-7xl px-4">
+        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 py-16 transition-colors duration-300">
+            <div className="container mx-auto max-w-3xl px-4">
+                {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     className="text-center mb-12"
                 >
-                    <h1 className="text-4xl font-bold text-zinc-900 dark:text-white">
+                    <h1 className="text-4xl font-extrabold text-zinc-900 dark:text-white">
                         Get in Touch with Us
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-4 max-w-xl mx-auto">
-                        We are here to help! Whether you have a question,
-                        suggestion, or need support, feel free to reach out.
+                    <p className="mt-4 text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
+                        Whether you have questions, feedback, or just want to
+                        say hi — we're here to help.
                     </p>
                 </motion.div>
 
+                {/* Form Section */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2, duration: 0.5 }}
-                    className="max-w-xl mx-auto"
+                    className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-8 rounded-xl shadow-md"
                 >
                     {success ? (
-                        <div className="bg-green-100 text-green-800 p-4 rounded-md text-center mb-8">
+                        <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 p-4 rounded-md text-center mb-6">
                             <p>Your message has been successfully sent!</p>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Name */}
                             <div>
                                 <label
                                     htmlFor="name"
-                                    className="block text-lg font-medium text-zinc-900 dark:text-white"
+                                    className="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1"
                                 >
                                     Name
                                 </label>
@@ -74,17 +77,19 @@ export default function ContactPage() {
                                     id="name"
                                     type="text"
                                     name="name"
+                                    placeholder="John Doe"
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     required
-                                    className="mt-2 p-3 w-full border rounded-md text-sm dark:bg-zinc-800 dark:text-white dark:border-zinc-700 focus:ring-2 focus:ring-emerald-500"
+                                    className="w-full px-4 py-3 text-sm rounded-md border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition"
                                 />
                             </div>
 
+                            {/* Email */}
                             <div>
                                 <label
                                     htmlFor="email"
-                                    className="block text-lg font-medium text-zinc-900 dark:text-white"
+                                    className="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1"
                                 >
                                     Email
                                 </label>
@@ -92,36 +97,40 @@ export default function ContactPage() {
                                     id="email"
                                     type="email"
                                     name="email"
+                                    placeholder="you@example.com"
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     required
-                                    className="mt-2 p-3 w-full border rounded-md text-sm dark:bg-zinc-800 dark:text-white dark:border-zinc-700 focus:ring-2 focus:ring-emerald-500"
+                                    className="w-full px-4 py-3 text-sm rounded-md border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition"
                                 />
                             </div>
 
+                            {/* Message */}
                             <div>
                                 <label
                                     htmlFor="message"
-                                    className="block text-lg font-medium text-zinc-900 dark:text-white"
+                                    className="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1"
                                 >
                                     Message
                                 </label>
                                 <textarea
                                     id="message"
                                     name="message"
+                                    rows={6}
+                                    placeholder="Write your message here..."
                                     value={formData.message}
                                     onChange={handleInputChange}
                                     required
-                                    rows={6}
-                                    className="mt-2 p-3 w-full border rounded-md text-sm dark:bg-zinc-800 dark:text-white dark:border-zinc-700 focus:ring-2 focus:ring-emerald-500"
+                                    className="w-full px-4 py-3 text-sm rounded-md border border-zinc-300 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition"
                                 ></textarea>
                             </div>
 
+                            {/* Submit */}
                             <div className="text-center">
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg text-sm focus:outline-none disabled:bg-emerald-300"
+                                    className="inline-block bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-medium px-6 py-3 rounded-md text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                                 >
                                     {isSubmitting
                                         ? "Sending..."

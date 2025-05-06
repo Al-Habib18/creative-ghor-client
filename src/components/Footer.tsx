@@ -12,7 +12,7 @@ function Footer() {
                 <div className=" max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-sm text-gray-600 dark:text-gray-400 text-center md:text-left">
                         &copy; 2025{" "}
-                        <span className="font-semibold">Creative Ghor</span>.
+                        <span className="font-semibold">Creative Shop</span>.
                         All rights reserved.
                     </p>
 
