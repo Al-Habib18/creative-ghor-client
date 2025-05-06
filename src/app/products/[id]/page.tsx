@@ -11,12 +11,17 @@ import Loading from "@/components/Loading";
 import ErrorMessage from "@/components/ErrorMessage";
 import renderStars from "@/components/renderStars";
 import { useAppDispatch } from "@/state/redux";
+import confetti from "canvas-confetti";
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function ProductDetailsPage() {
     const { id } = useParams();
     const dispatch = useAppDispatch();
     const { resolvedTheme } = useTheme();
     const isDark = resolvedTheme === "dark";
+    const [confettiFired, setConfettiFired] = useState(false);
 
     const {
         data: product,
@@ -36,6 +41,17 @@ export default function ProductDetailsPage() {
                 stock: product.stock,
             })
         );
+
+        if (!confettiFired) {
+            confetti({
+                particleCount: 120,
+                spread: 90,
+                origin: { y: 0.6 },
+            });
+            toast.success("Product added to cart! 🎉");
+            setConfettiFired(true);
+            setTimeout(() => setConfettiFired(false), 3000);
+        }
     };
 
     if (isLoading) return <Loading />;
@@ -133,6 +149,43 @@ export default function ProductDetailsPage() {
                                 : "Out of stock"}
                         </p>
                     </div>
+                </div>
+            </div>
+
+            {/* Bottom Actions & Navigation */}
+            <div className="max-w-6xl mx-auto mt-12 border-t pt-8 items-center  justify-center grid-cols-1 sm:flex-row gap-4 border-gray-200 dark:border-zinc-700">
+                <h2 className="text-lg font-semibold mb-4 text-center sm:text-left">
+                    What would you like to do next?
+                </h2>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center sm:justify-start">
+                    <Link
+                        href="/cart"
+                        className={`
+        inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md text-sm font-medium transition-colors shadow 
+        ${
+            isDark
+                ? "bg-emerald-600 text-white hover:bg-emerald-500"
+                : "bg-emerald-500 text-white hover:bg-emerald-600"
+        }
+      `}
+                    >
+                        🛒 View Cart
+                    </Link>
+
+                    <Link
+                        href="/products"
+                        className={`
+        inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md text-sm font-medium transition-colors shadow 
+        ${
+            isDark
+                ? "bg-white text-black hover:bg-gray-100"
+                : "bg-zinc-100 text-black hover:bg-zinc-200"
+        }
+      `}
+                    >
+                        🛍️ Shop More
+                    </Link>
                 </div>
             </div>
         </section>
