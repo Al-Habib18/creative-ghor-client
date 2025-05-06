@@ -29,6 +29,7 @@ export default function ProductDetailsPage() {
         error,
     } = useGetSingleProductQuery(id as string);
 
+    console.log("product:-", product);
     const handleAddToCart = () => {
         if (!product) return;
         dispatch(
@@ -73,7 +74,7 @@ export default function ProductDetailsPage() {
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 rounded-2xl shadow-lg p-6 bg-white dark:bg-zinc-800">
                 <div className="w-full md:w-1/2">
                     <Image
-                        src={/* product.image ||  */ "/placeholder.jpeg"}
+                        src={product.image || "/placeholder.jpeg"}
                         alt={product.name}
                         width={500}
                         height={400}

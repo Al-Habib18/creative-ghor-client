@@ -19,7 +19,7 @@ const productApi = api.injectEndpoints({
         }),
 
         createProduct: builder.mutation<Product, FormData>({
-            query: (formData) => ({
+            query: (formData: FormData) => ({
                 url: "/products",
                 method: "POST",
                 body: formData,
@@ -31,7 +31,7 @@ const productApi = api.injectEndpoints({
             Product,
             { id: string; data: FormData }
         >({
-            query: ({ id, data }) => ({
+            query: ({ id, data }: { id: string; data: FormData }) => ({
                 url: `/products/${id}`,
                 method: "PUT",
                 body: data,
@@ -40,7 +40,7 @@ const productApi = api.injectEndpoints({
         }),
 
         deleteProduct: builder.mutation<void, string>({
-            query: (id) => ({
+            query: (id: string) => ({
                 url: `/products/${id}`,
                 method: "DELETE",
             }),

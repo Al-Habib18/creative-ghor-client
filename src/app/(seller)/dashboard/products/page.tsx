@@ -13,7 +13,6 @@ import ProductCard from "@/components/seller/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Clerk } from "@clerk/clerk-js";
 import { useUser } from "@clerk/nextjs";
 import {
     Select,
