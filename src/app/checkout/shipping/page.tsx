@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/state/redux";
 import { clearCart } from "@/state/cartSlice";
+import { CreditCard, HandCoins, Loader2 } from "lucide-react";
 
 export default function ShippingPage() {
     const router = useRouter();
@@ -20,8 +21,7 @@ export default function ShippingPage() {
         useCreateShippingAddressMutation();
     const [createOrder, { isLoading: isCreatingOrder }] =
         useCreateOrderMutation();
-    const [createPayment, { isLoading: isCreatingPayment }] =
-        useCreatePaymentMutation();
+    const [createPayment] = useCreatePaymentMutation();
 
     const [shippingAddressId, setShippingAddressId] = useState<string | null>(
         null
@@ -87,12 +87,6 @@ export default function ShippingPage() {
             } else if (paymentMethod === "sslcommerz") {
                 try {
                     const orderId = order?.id || "";
-                    const token = await window.Clerk?.session?.getToken();
-
-                    if (!token) {
-                        toast.error("Unauthorized! Please log in.");
-                        return;
-                    }
 
                     const response = await createPayment({
                         orderId,
@@ -115,7 +109,7 @@ export default function ShippingPage() {
     };
 
     return (
-        <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-zinc-900 text-black dark:text-white">
+        <div className="min-h-screen space-y-6 py-4  px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-zinc-900 text-black dark:text-white">
             <div className="max-w-2xl mx-auto bg-white dark:bg-zinc-800 p-8 rounded-2xl shadow-md">
                 <h1 className="text-2xl font-bold mb-6 text-center">
                     Shipping Information
@@ -169,33 +163,56 @@ export default function ShippingPage() {
                             : "Save Shipping Address"}
                     </Button>
                 </form>
-
-                <div className="mt-8">
-                    <h2 className="text-lg font-semibold mb-2">
-                        Select Payment Method
-                    </h2>
-                    <label className="block mb-2">
-                        <input
-                            type="radio"
-                            name="paymentMethod"
-                            value="cod"
-                            onChange={() => setPaymentMethod("cod")}
-                            checked={paymentMethod === "cod"}
-                            className="mr-2"
-                        />
-                        Cash on Delivery
-                    </label>
-                    <label className="block mb-4">
-                        <input
-                            type="radio"
-                            name="paymentMethod"
-                            value="sslcommerz"
-                            onChange={() => setPaymentMethod("sslcommerz")}
-                            checked={paymentMethod === "sslcommerz"}
-                            className="mr-2"
-                        />
-                        Pay with SSLCommerz
-                    </label>
+            </div>
+            <div className="max-w-2xl mx-auto bg-white dark:bg-zinc-800 p-8 rounded-2xl shadow-md">
+                <div className="">
+                    <h1 className="text-3xl font-bold text-center mb-6">
+                        Choose Payment Method
+                    </h1>
+                    <div className="space-y-4">
+                        <label
+                            className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition ${
+                                paymentMethod === "cod"
+                                    ? "border-green-600 bg-green-50 dark:bg-green-900"
+                                    : "border-gray-300 dark:border-zinc-700"
+                            }`}
+                        >
+                            <input
+                                type="radio"
+                                name="paymentMethod"
+                                value="cod"
+                                onChange={() => setPaymentMethod("cod")}
+                                checked={paymentMethod === "cod"}
+                                className="mr-2"
+                                disabled={isCreatingOrder}
+                            />
+                            <HandCoins className="text-green-600" />
+                            <span className="text-sm font-medium">
+                                Cash on Delivery
+                            </span>
+                        </label>
+                        <label
+                            className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition ${
+                                paymentMethod === "sslcommerz"
+                                    ? "border-blue-600 bg-blue-50 dark:bg-blue-900"
+                                    : "border-gray-300 dark:border-zinc-700"
+                            }`}
+                        >
+                            <input
+                                type="radio"
+                                name="paymentMethod"
+                                value="sslcommerz"
+                                onChange={() => setPaymentMethod("sslcommerz")}
+                                checked={paymentMethod === "sslcommerz"}
+                                className="mr-2"
+                                disabled={isCreatingOrder}
+                            />
+                            <CreditCard className="text-blue-600" />
+                            <span className="text-sm font-medium">
+                                Pay with SSLCommerz
+                            </span>
+                        </label>
+                    </div>
 
                     <Button
                         onClick={handleContinue}
@@ -206,7 +223,14 @@ export default function ShippingPage() {
                         }
                         className="w-full mt-4"
                     >
-                        {isCreatingOrder ? "Processing..." : "Continue"}
+                        {isCreatingOrder ? (
+                            <span className="flex items-center gap-2">
+                                <Loader2 className="animate-spin" size={18} />
+                                Processing...
+                            </span>
+                        ) : (
+                            "Continue"
+                        )}
                     </Button>
                 </div>
             </div>

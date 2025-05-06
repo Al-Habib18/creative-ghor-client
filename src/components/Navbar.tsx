@@ -9,26 +9,25 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+const navLinks = ["Home", "Products", "About", "Contact"];
 
 export default function Navbar() {
     const { theme, setTheme } = useTheme();
+    const pathname = usePathname();
     const cartItemCount = useAppSelector((state) =>
         state.cart.items.reduce((total, item) => total + item.quantity, 0)
     );
 
     const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
 
-    // Set mounted to true after the initial render to avoid hydration issues
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    if (!mounted) {
-        return null; // Prevent render until the client-side is ready
-    }
+    if (!mounted) return null;
 
     return (
-        <header className="bg-white dark:bg-zinc-900 shadow-sm sticky top-0 z-50 border-b-1 border-gray-700">
+        <header className="bg-white dark:bg-zinc-900 shadow-sm sticky top-0 z-50 border-b border-zinc-200 dark:border-zinc-700">
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
                 {/* Logo */}
                 <Link
@@ -38,27 +37,42 @@ export default function Navbar() {
                     Creative<span className="text-emerald-500">Shop</span>
                 </Link>
 
-                {/* Nav links */}
-                <div className="hidden md:flex items-center space-x-6">
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        className="px-3 py-1 rounded-md text-sm bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white focus:outline-none"
-                    />
-                    {["Home", "Shop", "About", "Contact"].map((item) => (
-                        <Link
-                            key={item}
-                            href={`/${item.toLowerCase()}`}
-                            className="text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:text-emerald-500 transition"
-                        >
-                            {item}
-                        </Link>
-                    ))}
+                {/* Nav Links + Search */}
+                <div className="hidden md:flex items-center gap-6">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            className="px-3 py-2 rounded-md text-sm bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white border border-zinc-300 dark:border-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                    </div>
+                    {navLinks.map((item) => {
+                        const path = `/${
+                            item.toLowerCase() === "home"
+                                ? ""
+                                : item.toLowerCase()
+                        }`;
+                        const isActive = pathname === path;
+                        return (
+                            <Link
+                                key={item}
+                                href={path}
+                                className={cn(
+                                    "px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+                                    isActive
+                                        ? "text-white bg-emerald-600 dark:bg-emerald-500"
+                                        : "text-zinc-700 dark:text-zinc-200 hover:text-emerald-500 dark:hover:text-emerald-400"
+                                )}
+                            >
+                                {item}
+                            </Link>
+                        );
+                    })}
                 </div>
 
-                {/* Right section */}
-                <div className="flex items-center space-x-4">
-                    {/* Theme toggle */}
+                {/* Right Section */}
+                <div className="flex items-center gap-4">
+                    {/* Theme Toggle */}
                     <button
                         onClick={() =>
                             setTheme(theme === "dark" ? "light" : "dark")
@@ -73,7 +87,7 @@ export default function Navbar() {
                         )}
                     </button>
 
-                    {/* Cart */}
+                    {/* Cart Icon */}
                     <Link
                         href="/cart"
                         className="relative text-zinc-700 dark:text-zinc-200 hover:text-emerald-500 transition"
@@ -87,7 +101,7 @@ export default function Navbar() {
                         )}
                     </Link>
 
-                    {/* User/Login */}
+                    {/* User/Login Buttons */}
                     <SignedIn>
                         <UserButton
                             appearance={{
@@ -105,13 +119,13 @@ export default function Navbar() {
                     <SignedOut>
                         <Link
                             href="/sign-up"
-                            className="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded-md text-sm transition"
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-md text-sm"
                         >
                             Register
                         </Link>
                         <Link
                             href="/sign-in"
-                            className="bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm transition"
+                            className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-md text-sm"
                         >
                             Login
                         </Link>

@@ -1,6 +1,13 @@
 /** @format */
-
-export type Product = {
+export enum CategoryEnum {
+    ELECTRONICS = "ELECTRONICS",
+    FASHION = "FASHION",
+    GROCERY = "GROCERY",
+    BOOKS = "BOOKS",
+    HOME = "HOME",
+    TOYS = "TOYS",
+}
+export interface Product {
     id: string;
     userId: string;
     name: string;
@@ -12,24 +19,24 @@ export type Product = {
     stock: number; // Quantity of the product in stock
     rating: number; // Product rating (e.g., 4.2)
     reviewsCount: number; // Number of reviews
-};
+}
 
-export type CartItem = {
+export interface CartItem {
     id: string;
     name: string;
     price: number;
     image: string;
     quantity: number;
     stock: number;
-};
+}
 
-export type Order = {
+export interface Order {
     id?: string | null;
     shippingAddressId: string | null;
     productIds: string[];
     quantity: number;
     totalAmount: number;
-};
+}
 
 export type ShippingAddress = {
     id: string | null;

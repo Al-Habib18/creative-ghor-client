@@ -46,6 +46,8 @@ export default function ProductDetailsPage() {
         (product.price * product.discount) / 100
     ).toFixed(2);
 
+    const isOutOfStock = product.stock <= 0;
+
     return (
         <section
             className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${
@@ -100,19 +102,21 @@ export default function ProductDetailsPage() {
                     <div className="mt-6 flex gap-4 flex-wrap">
                         <button
                             onClick={handleAddToCart}
-                            className={`px-6 py-3 rounded-xl text-sm font-medium transition-colors shadow ${
+                            className={`px-6 py-3 rounded-md text-sm font-medium transition-colors shadow ${
                                 isDark
                                     ? "bg-white text-black hover:bg-gray-200"
                                     : "bg-black text-white hover:bg-gray-800"
                             }`}
+                            disabled={isOutOfStock}
                         >
-                            Add to Cart
+                            {isOutOfStock ? "Out of Stock" : "Add to Cart"}
                         </button>
 
                         <CheckoutButton
                             name="Shop Now"
                             redirectUrl="/cart"
                             onBeforeRedirect={handleAddToCart}
+                            disabled={isOutOfStock}
                         />
                     </div>
 

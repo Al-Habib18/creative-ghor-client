@@ -10,22 +10,25 @@ type CheckoutButtonProps = {
     redirectUrl?: string;
     name?: string;
     onBeforeRedirect?: () => void;
+    disabled?: boolean;
 };
 
 const CheckoutButton = ({
     redirectUrl = "/checkout/shipping",
     name = "Checkout",
     onBeforeRedirect,
+    disabled = false,
 }: CheckoutButtonProps) => {
     const { isSignedIn } = useUser();
     const router = useRouter();
 
     const handleCheckout = () => {
+        if (disabled) return;
+
         if (isSignedIn) {
-            onBeforeRedirect?.(); // Dispatch Redux action, etc.
+            onBeforeRedirect?.();
             router.push(redirectUrl);
         } else {
-            // Open Clerk modal
             document.getElementById("clerk-modal-trigger")?.click();
         }
     };
@@ -33,13 +36,18 @@ const CheckoutButton = ({
     return (
         <>
             <button
+                disabled={disabled}
                 onClick={handleCheckout}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
+                className={`px-4 py-2 rounded-md text-sm transition font-medium ${
+                    disabled
+                        ? "bg-gray-400 cursor-not-allowed text-white"
+                        : "bg-blue-600 hover:bg-blue-700 text-white"
+                }`}
             >
                 {name}
             </button>
 
-            {/* Clerk modal trigger */}
+            {/* Hidden Clerk Modal Trigger */}
             <SignInButton mode="modal" forceRedirectUrl={redirectUrl}>
                 <button id="clerk-modal-trigger" style={{ display: "none" }} />
             </SignInButton>
