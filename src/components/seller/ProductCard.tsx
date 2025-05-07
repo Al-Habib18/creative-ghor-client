@@ -17,7 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="rounded-2xl bg-white dark:bg-zinc-900 text-black dark:text-white dark:border-1 shadow-sm hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col">
             <div className="relative w-full h-48 rounded-lg overflow-hidden">
                 <Image
-                    src={ product.image ||  "/placeholder.jpeg"}
+                    src={product.image || "/placeholder.jpeg"}
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-200 hover:scale-105"
@@ -53,7 +53,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
             </div>
 
-            <Link href={`/dashboard/products/${product.id}`} passHref>
+            <Link href={`/seller/products/${product.id}`} passHref>
                 <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded-xl w-full transition-colors">
                     View Details
                 </button>

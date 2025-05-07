@@ -29,7 +29,6 @@ export default function ProductDetailsPage() {
         error,
     } = useGetSingleProductQuery(id as string);
 
-    console.log("product:-", product);
     const handleAddToCart = () => {
         if (!product) return;
         dispatch(

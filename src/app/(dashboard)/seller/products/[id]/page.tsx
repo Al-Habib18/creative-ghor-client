@@ -37,7 +37,7 @@ export default function SellerProductDetailsPage() {
             setIsDeleting(true);
             await deleteProduct(product.id).unwrap();
             toast.success("Product deleted successfully");
-            router.push("/dashboard/products");
+            router.push("/seller/products");
         } catch (err) {
             toast.error("Failed to delete product.");
             console.error(err);
@@ -116,7 +116,7 @@ export default function SellerProductDetailsPage() {
                     {/* Actions */}
                     <div className="mt-6 flex flex-wrap gap-4">
                         <Link
-                            href={`/dashboard/products/edit/${product.id}`}
+                            href={`/seller/products/edit/${product.id}`}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm"
                         >
                             Edit Product

@@ -7,6 +7,18 @@ export enum CategoryEnum {
     HOME = "HOME",
     TOYS = "TOYS",
 }
+export enum OrderStatusEnum {
+    "CONFIRMED",
+    "PENDING",
+    "CANCELLED",
+    "SHIPPED",
+    "DELIVERED",
+}
+
+export enum PaymentStatusEnum {
+    "PAID",
+    "UNPAID",
+}
 export interface Product {
     id: string;
     userId: string;
@@ -32,10 +44,28 @@ export interface CartItem {
 
 export interface Order {
     id?: string | null;
+    userId?: string;
     shippingAddressId: string | null;
     productIds: string[];
     quantity: number;
     totalAmount: number;
+    orderStatus?: string;
+    paymentStatus?: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface Order_type {
+    id: string;
+    userId: string;
+    shippingAddressId: string | null;
+    productIds: string[];
+    quantity: number;
+    totalAmount: number;
+    orderStatus: string;
+    paymentStatus: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type ShippingAddress = {

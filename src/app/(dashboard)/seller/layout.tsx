@@ -1,6 +1,5 @@
 /** @format */
 
-// app/(seller)/dashboard/layout.tsx
 import DashboardSidebar from "@/components/seller/DashboardSidebar";
 
 export default function SellerLayout({

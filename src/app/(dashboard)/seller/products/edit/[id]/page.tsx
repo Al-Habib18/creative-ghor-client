@@ -241,7 +241,7 @@ export default function ProductUpdatePage() {
                     <Button
                         type="button"
                         variant="ghost"
-                        onClick={() => router.push(`/dashboard/products/${id}`)}
+                        onClick={() => router.push(`/seller/products/${id}`)}
                     >
                         Cancel
                     </Button>

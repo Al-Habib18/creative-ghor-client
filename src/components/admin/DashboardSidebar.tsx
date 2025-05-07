@@ -8,21 +8,21 @@ import { LayoutDashboard, Package, ShoppingCart, User } from "lucide-react"; // 
 
 const links = [
     {
-        href: "/seller/dashboard",
+        href: "/admin/dashboard",
         label: "Dashboard",
         icon: <LayoutDashboard size={18} />,
     },
     {
-        href: "/seller/products",
+        href: "/admin/products",
         label: "Products",
         icon: <Package size={18} />,
     },
     {
-        href: "/seller/orders",
+        href: "/admin/orders",
         label: "Orders",
         icon: <ShoppingCart size={18} />,
     },
-    { href: "/seller/profile", label: "Profile", icon: <User size={18} /> },
+    { href: "/admin/profile", label: "Profile", icon: <User size={18} /> },
 ];
 
 export default function DashboardSidebar() {
@@ -31,7 +31,7 @@ export default function DashboardSidebar() {
     return (
         <aside className="w-64 min-h-screen border-r bg-zinc-100 dark:bg-zinc-900 dark:border-zinc-800 p-6">
             <h2 className="text-2xl font-semibold text-zinc-800 dark:text-white mb-8">
-                Seller Panel
+                Admin Panel
             </h2>
             <nav className="space-y-1">
                 {links.map(({ href, label, icon }) => {

@@ -42,7 +42,7 @@ export default function ConfirmationPage() {
 
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                     {orderId && (
-                        <Link href={`/dashboard/orders/${orderId}`}>
+                        <Link href={`/orders`}>
                             <Button className="w-full sm:w-auto">
                                 See Order Status
                             </Button>
