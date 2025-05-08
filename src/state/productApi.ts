@@ -1,14 +1,26 @@
 /** @format */
 
 import { api } from "./api";
-import { Product } from "@/types";
+import { CategoryEnum, Product } from "@/types";
+
+type ProductFilter = {
+    limit?: number;
+    page?: number;
+    category?: CategoryEnum;
+    sortType?: string;
+};
 
 const productApi = api.injectEndpoints({
     endpoints: (builder) => ({
-        getAllProducts: builder.query<Product[], { category?: string }>({
-            query: ({ category }) => ({
+        getAllProducts: builder.query<Product[], ProductFilter>({
+            query: ({ limit, page, category, sortType }) => ({
                 url: "/products",
-                params: category ? { category } : undefined,
+                params: {
+                    ...(limit && { limit }),
+                    ...(page && { page }),
+                    ...(category && { category }),
+                    ...(sortType && { sortType: sortType }), // sort=asc or sort=desc
+                },
             }),
             providesTags: ["Products"],
         }),

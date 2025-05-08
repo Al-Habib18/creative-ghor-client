@@ -8,16 +8,18 @@ export enum CategoryEnum {
     TOYS = "TOYS",
 }
 export enum OrderStatusEnum {
-    "CONFIRMED",
-    "PENDING",
-    "CANCELLED",
-    "SHIPPED",
-    "DELIVERED",
+    ALL = "ALL",
+    PENDING = "PENDING",
+    CONFIRMED = "CONFIRMED",
+    SHIPPED = "SHIPPED",
+    DELIVERED = "DELIVERED",
+    CANCELLED = "CANCELLED",
 }
 
 export enum PaymentStatusEnum {
-    "PAID",
-    "UNPAID",
+    ALL = "ALL",
+    PAID = "PAID",
+    UNPAID = "UNPAID",
 }
 export interface Product {
     id: string;
@@ -77,3 +79,33 @@ export type ShippingAddress = {
     postalCode: string;
     phoneNumber: string;
 };
+
+export interface UserSettings {
+    theme?: "light" | "dark";
+    emailAlerts?: boolean;
+    smsAlerts?: boolean;
+    pushNotifications?: boolean;
+    notificationFrequency?: "immediate" | "daily" | "weekly";
+}
+
+export interface User {
+    userId: string;
+    firstName?: string;
+    lastName?: string;
+    username?: string;
+    email: string;
+    publicMetadata: {
+        userType: "admin" | "seller" | "buyer";
+    };
+    privateMetadata: {
+        settings?: UserSettings;
+        defaultPaymentMethodId?: string;
+        stripeCustomerId?: string;
+    };
+    unsafeMetadata: {
+        bio?: string;
+        urls?: string[];
+    };
+}
+
+export type sortType = "asc" | "desc" | "";

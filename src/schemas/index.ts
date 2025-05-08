@@ -67,3 +67,15 @@ export const UserSchema = z.object({
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });
+
+// Notification Settings Schema
+export const notificationSettingsSchema = z.object({
+    pushNotifications: z.boolean(),
+    emailAlerts: z.boolean(),
+    smsAlerts: z.boolean(),
+    notificationFrequency: z.enum(["immediate", "daily", "weekly"]),
+});
+
+export type NotificationSettingsFormData = z.infer<
+    typeof notificationSettingsSchema
+>;

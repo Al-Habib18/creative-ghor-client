@@ -4,7 +4,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils";
-import { LayoutDashboard, Package, ShoppingCart, User } from "lucide-react"; // You can replace or customize these icons
+import {
+    LayoutDashboard,
+    Settings,
+    Package,
+    ShoppingCart,
+    User,
+} from "lucide-react"; // You can replace or customize these icons
 
 const links = [
     {
@@ -23,6 +29,11 @@ const links = [
         icon: <ShoppingCart size={18} />,
     },
     { href: "/admin/profile", label: "Profile", icon: <User size={18} /> },
+    {
+        href: "/admin/settings",
+        label: "Settings",
+        icon: <Settings size={18} />,
+    },
 ];
 
 export default function DashboardSidebar() {

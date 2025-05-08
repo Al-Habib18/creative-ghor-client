@@ -5,23 +5,23 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils";
-
 import {
     LayoutDashboard,
     Package,
     User,
+    MapPin,
     Settings,
     Menu,
     X,
-    Package2,
 } from "lucide-react";
 
 const links = [
-    { href: "/seller/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/seller/products", label: "Products", icon: Package2 },
-    { href: "/seller/orders", label: "Orders", icon: Package },
-    { href: "/seller/profile", label: "Profile", icon: User },
-    { href: "/seller/settings", label: "Settings", icon: Settings },
+    { href: "/user/dashboard", label: "Dashboard", icon: LayoutDashboard },
+
+    { href: "/user/profile", label: "Profile", icon: User },
+    { href: "/user/settings", label: "Settings", icon: Settings },
+    { href: "/user/orders", label: "Orders", icon: Package },
+    { href: "/user/addresses", label: "Shipping Address", icon: MapPin },
 ];
 
 export default function DashboardSidebar() {

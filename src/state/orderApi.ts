@@ -1,11 +1,13 @@
 /** @format */
 
 import { api } from "./api";
-import { Order } from "@/types";
+import { Order, OrderStatusEnum, PaymentStatusEnum } from "@/types";
 
 type OrderFilters = {
-    orderStatus?: string;
-    paymentStatus?: string;
+    page?: number;
+    limit?: number;
+    orderStatus?: OrderStatusEnum;
+    paymentStatus?: PaymentStatusEnum;
 };
 
 type UpdateOrder = {
@@ -43,18 +45,16 @@ const orderApi = api.injectEndpoints({
             }),
             invalidatesTags: ["Orders"],
         }),
-        getAllOrders: builder.query<Order[], OrderFilters | void>({
-            query: (filters: any) => {
-                const params = new URLSearchParams();
-
-                if (filters?.orderStatus)
-                    params.append("orderStatus", filters.orderStatus);
-                if (filters?.paymentStatus)
-                    params.append("paymentStatus", filters.paymentStatus);
-
-                const queryString = params.toString();
-                return `/orders?${queryString ? `${queryString}` : "#"}`;
-            },
+        getAllOrders: builder.query<Order[], OrderFilters>({
+            query: ({ limit, page, orderStatus, paymentStatus }) => ({
+                url: "/orders",
+                params: {
+                    ...(limit && { limit }),
+                    ...(page && { page }),
+                    ...(orderStatus && { orderStatus }),
+                    ...(paymentStatus && { paymentStatus }),
+                },
+            }),
             providesTags: ["Orders"],
         }),
     }),

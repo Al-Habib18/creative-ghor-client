@@ -26,7 +26,9 @@ export default function ShopPage() {
 
     if (isLoading) return <Loading message="Loading products..." />;
     if (isError || !products || products.length === 0)
-        return <ErrorMessage message="No products found." />;
+        return (
+            <ErrorMessage message="No products found." showHomeLink={false} />
+        );
 
     return (
         <div

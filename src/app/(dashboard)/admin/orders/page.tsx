@@ -3,11 +3,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useGetAllOrdersQuery } from "@/state/orderApi";
 import { Order, OrderStatusEnum, PaymentStatusEnum } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Filter, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -22,45 +22,51 @@ const orderStatusOptions = Object.values(OrderStatusEnum);
 const paymentStatusOptions = Object.values(PaymentStatusEnum);
 
 export default function AdminOrdersPage() {
-    const router = useRouter();
-
-    const [orderStatus, setOrderStatus] = useState<string>("");
-    const [paymentStatus, setPaymentStatus] = useState<string>("");
-    const [filtersApplied, setFiltersApplied] = useState(false);
-
-    /*     const filters = filtersApplied
-        ? {
-              ...(orderStatus && { orderStatus }),
-              ...(paymentStatus && { paymentStatus }),
-          }
-        : undefined; */
-
-    const filters = {
-        ...(filtersApplied && orderStatus && { orderStatus }),
-        ...(filtersApplied && paymentStatus && { paymentStatus }),
-    };
+    const [page, setPage] = useState(1);
+    const [limit] = useState(10); //TODO: You can make this dynamic if needed
+    const [orderStatus, setOrderStatus] = useState<
+        OrderStatusEnum | undefined
+    >();
+    const [paymentStatus, setPaymentStatus] = useState<
+        PaymentStatusEnum | undefined
+    >();
 
     const {
-        data: orders = [],
+        data: orders,
         isLoading,
         isError,
-    } = useGetAllOrdersQuery(filters);
+        refetch,
+    } = useGetAllOrdersQuery(
+        { page, limit, orderStatus, paymentStatus },
+        { refetchOnMountOrArgChange: true }
+    );
 
-    // Update URL when filters are applied
     useEffect(() => {
-        if (filtersApplied) {
-            const params = new URLSearchParams();
-            if (orderStatus) params.set("orderStatus", orderStatus);
-            if (paymentStatus) params.set("paymentStatus", paymentStatus);
-            router.push(`/admin/orders?${params.toString()}`);
-        }
-    }, [filtersApplied, orderStatus, paymentStatus, router]);
+        refetch();
+    }, [page, orderStatus, paymentStatus, refetch]);
 
     return (
         <div className="p-6 max-w-7xl mx-auto">
-            <h1 className="text-2xl font-semibold mb-6 text-zinc-800 dark:text-white">
-                Manage Orders
-            </h1>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-semibold text-zinc-800 dark:text-white">
+                    Manage Orders
+                </h1>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                        className="px-4 py-2 border rounded hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    >
+                        Prev
+                    </button>
+                    <span className="px-2 py-2">{page}</span>
+                    <button
+                        onClick={() => setPage((prev) => prev + 1)}
+                        className="px-4 py-2 border rounded hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
 
             {/* Filter Section */}
             <div className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg shadow mb-6">
@@ -71,7 +77,9 @@ export default function AdminOrdersPage() {
                         </label>
                         <Select
                             value={orderStatus}
-                            onValueChange={setOrderStatus}
+                            onValueChange={(val) =>
+                                setOrderStatus(val as OrderStatusEnum)
+                            }
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select status" />
@@ -92,40 +100,51 @@ export default function AdminOrdersPage() {
                         </label>
                         <Select
                             value={paymentStatus}
-                            onValueChange={setPaymentStatus}
+                            onValueChange={(val) =>
+                                setPaymentStatus(val as PaymentStatusEnum)
+                            }
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select status" />
                             </SelectTrigger>
                             <SelectContent>
-                                {paymentStatusOptions.map((status) => (
-                                    <SelectItem key={status} value={status}>
-                                        {status}
-                                    </SelectItem>
-                                ))}
+                                {paymentStatusOptions.map(
+                                    (status) => (
+                                        console.log("staus: ", status),
+                                        (
+                                            <SelectItem
+                                                key={status}
+                                                value={status}
+                                            >
+                                                {status}
+                                            </SelectItem>
+                                        )
+                                    )
+                                )}
                             </SelectContent>
                         </Select>
                     </div>
 
                     <div className="mt-6 flex gap-3 items-center">
-                        <Button
+                        {/*                         <Button
                             size="sm"
                             className="gap-2 px-4 py-2 text-sm font-medium rounded-xl shadow-sm hover:bg-primary/90 transition"
-                            onClick={() => setFiltersApplied(true)}
+                            onClick={() => {
+                                refetch();
+                            }}
                         >
                             <Filter size={16} />
                             Apply Filters
-                        </Button>
+                        </Button> */}
 
                         <Button
                             variant="outline"
                             size="sm"
                             className="gap-2 px-4 py-2 text-sm font-medium rounded-xl hover:border-zinc-400 dark:hover:border-zinc-600 transition"
                             onClick={() => {
-                                setOrderStatus("");
-                                setPaymentStatus("");
-                                setFiltersApplied(false);
-                                router.push("/admin/orders");
+                                setOrderStatus(undefined);
+                                setPaymentStatus(undefined);
+                                setPage(1);
                             }}
                         >
                             <RotateCcw size={16} />
@@ -149,7 +168,7 @@ export default function AdminOrdersPage() {
 
             {/* Orders List */}
             <div className="grid grid-cols-1 gap-6">
-                {orders.map((order: Order) => (
+                {orders?.map((order: Order) => (
                     <div
                         key={order.id}
                         className="border rounded-lg p-4 bg-white dark:bg-zinc-900 dark:border-zinc-700 shadow"
@@ -204,7 +223,8 @@ export default function AdminOrdersPage() {
                 ))}
             </div>
 
-            {!isLoading && orders.length === 0 && (
+            {/* No orders */}
+            {!isLoading && orders?.length === 0 && (
                 <p className="text-center text-zinc-500 dark:text-zinc-400 mt-10">
                     No orders found.
                 </p>

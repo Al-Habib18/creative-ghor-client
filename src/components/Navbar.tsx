@@ -112,7 +112,7 @@ export default function Navbar() {
                             }}
                             showName={true}
                             userProfileMode="navigation"
-                            userProfileUrl="/profile"
+                            userProfileUrl="/user/profile" //TODO: conditionally set
                         />
                     </SignedIn>
 

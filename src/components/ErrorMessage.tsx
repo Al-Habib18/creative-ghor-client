@@ -13,9 +13,7 @@ const ErrorMessage = ({
 }: ErrorMessageProps) => {
     return (
         <div className="text-center min-h-screen py-6 px-4 max-w-md mx-auto">
-            <h2 className="text-3xl font-semibold text-red-600 mb-2">
-                {message}
-            </h2>
+            <h2 className="text-3xl font-semibold  mb-2">{message}</h2>
             {showHomeLink && (
                 <Link
                     href="/"

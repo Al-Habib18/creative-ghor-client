@@ -75,6 +75,7 @@ const ProductsPage = () => {
         formData.append("image", imageFile);
 
         try {
+            setIsUploading(true);
             const token = await window.Clerk?.session?.getToken();
             if (!token) {
                 toast.error("Unauthorized! Please log in.");
