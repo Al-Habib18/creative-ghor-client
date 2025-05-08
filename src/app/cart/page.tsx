@@ -50,7 +50,7 @@ const CartPage = () => {
                                 {/* Product Info */}
                                 <div className="flex items-center gap-5 flex-1">
                                     <Image
-                                        src={item.image}
+                                        src={item.image || "/placeholder.jpeg"}
                                         alt={`Image of ${item.name}`}
                                         width={80}
                                         height={80}

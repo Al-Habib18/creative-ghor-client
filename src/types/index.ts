@@ -35,6 +35,16 @@ export interface Product {
     reviewsCount: number; // Number of reviews
 }
 
+export interface Review {
+    id: string;
+    userId: string;
+    productId: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface CartItem {
     id: string;
     name: string;

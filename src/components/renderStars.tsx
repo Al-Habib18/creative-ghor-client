@@ -1,6 +1,6 @@
 /** @format */
 
-import { Star, StarHalf, StarOff } from "lucide-react";
+import { Star, StarHalf } from "lucide-react";
 
 function renderStars(rating: number) {
     const fullStars = Math.floor(rating);
@@ -9,6 +9,7 @@ function renderStars(rating: number) {
 
     return (
         <div className="flex items-center gap-0.5 text-yellow-400">
+            {/* Full stars */}
             {[...Array(fullStars)].map((_, i) => (
                 <Star
                     key={`full-${i}`}
@@ -17,9 +18,21 @@ function renderStars(rating: number) {
                     stroke="none"
                 />
             ))}
-            {hasHalf && <StarHalf size={16} />}
+
+            {/* Half star */}
+            {hasHalf && (
+                <StarHalf size={16} className="fill-current text-yellow-400" />
+            )}
+
+            {/* Empty outlined stars */}
             {[...Array(emptyStars)].map((_, i) => (
-                <StarOff key={`empty-${i}`} size={16} />
+                <Star
+                    key={`empty-${i}`}
+                    size={16}
+                    fill="none"
+                    stroke="currentColor"
+                    className="text-gray-300 dark:text-zinc-600"
+                />
             ))}
         </div>
     );

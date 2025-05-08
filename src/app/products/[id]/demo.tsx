@@ -15,8 +15,6 @@ import confetti from "canvas-confetti";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import ReviewForm from "./ReviewForm";
-import ReviewList from "./ReviewList";
 
 export default function ProductDetailsPage() {
     const { id } = useParams();
@@ -190,8 +188,6 @@ export default function ProductDetailsPage() {
                     </Link>
                 </div>
             </div>
-            <ReviewForm productId={product.id} />
-            <ReviewList productId={product.id} />
         </section>
     );
 }

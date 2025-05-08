@@ -9,6 +9,7 @@ type ProductFilter = {
     category?: CategoryEnum;
     sortType?: string;
 };
+import { Review } from "@/types";
 
 const productApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -58,6 +59,10 @@ const productApi = api.injectEndpoints({
             }),
             invalidatesTags: ["Products"],
         }),
+        getAllReviewsOfProduct: builder.query<Review[], string>({
+            query: (id) => `/products/${id}/reviews`,
+            providesTags: ["Reviews"],
+        }),
     }),
 });
 
@@ -67,4 +72,5 @@ export const {
     useCreateProductMutation,
     useUpdateProductMutation,
     useDeleteProductMutation,
+    useGetAllReviewsOfProductQuery,
 } = productApi;
