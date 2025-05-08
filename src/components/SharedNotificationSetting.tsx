@@ -51,7 +51,7 @@ const SharedNotificationSettings = ({
 
         const currentMetadata = user.publicMetadata as {
             settings?: UserSettings;
-            userType: "admin" | "seller" | "buyer";
+            role: "admin" | "seller" | "buyer";
         };
 
         const updatedUser = {
@@ -62,7 +62,7 @@ const SharedNotificationSettings = ({
                     ...currentMetadata.settings,
                     ...data,
                 },
-                userType: currentMetadata.userType, // Ensure userType is included
+                role: currentMetadata.role, // Ensure userType is included
             },
         };
 
@@ -79,6 +79,7 @@ const SharedNotificationSettings = ({
     return (
         <div>
             <Header title={title} subtitle={subtitle} />
+
             <Form {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-4">
@@ -149,7 +150,6 @@ interface SharedNotificationSettingsProps {
     title?: string;
     subtitle?: string;
 }
-
 const ToggleField = ({
     label,
     field,
@@ -157,23 +157,25 @@ const ToggleField = ({
     label: string;
     field: {
         value: boolean;
-        onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        onChange: (value: boolean) => void;
     };
 }) => (
-    <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">{label}</span>
+    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+        <label className="text-sm font-medium text-gray-800 dark:text-gray-100">
+            {label}
+        </label>
         <Switch
             checked={field.value}
-            onChange={field.onChange}
+            onCheckedChange={field.onChange}
             className={clsx(
-                field.value ? "bg-blue-600" : "bg-gray-300",
-                "relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                "relative inline-flex  items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
+                field.value ? "bg-blue-600" : "bg-gray-300 dark:bg-zinc-700"
             )}
         >
             <span
                 className={clsx(
-                    field.value ? "translate-x-6" : "translate-x-1",
-                    "inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                    "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                    field.value ? "translate-x-6" : "translate-x-1"
                 )}
             />
         </Switch>

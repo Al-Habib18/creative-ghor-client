@@ -1,11 +1,17 @@
-import React from 'react'
+/** @format */
 
-const AdminSettingsPage = () => {
-  return (
-    <div>
-      Admin Settings
-    </div>
-  )
-}
+import React from "react";
+import SharedNotificationSetting from "@/components/SharedNotificationSetting";
 
-export default AdminSettingsPage
+const UserSettings = () => {
+    return (
+        <div className="min-h-screen mx-auto w-3/5">
+            <SharedNotificationSetting
+                title="User Settings"
+                subtitle="Manage your user settings"
+            />
+        </div>
+    );
+};
+
+export default UserSettings;
